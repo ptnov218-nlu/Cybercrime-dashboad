@@ -24,7 +24,9 @@ st.set_page_config(page_title="Hidden in plain sight", layout="wide")
 # Fixed categorical order (validated CVD-safe on adjacent pairs); never cycled.
 PALETTE = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"]
 BLUE, ORANGE, GREY = PALETTE[0], PALETTE[1], "#a3a29c"
-FULL = {"use_container_width": True}
+# Full-width charts/tables: newer Streamlit (incl. the stlite build on GitHub Pages) uses width="stretch".
+_ST = tuple(int(p) for p in st.__version__.split(".")[:2])
+FULL = {"width": "stretch"} if _ST >= (1, 50) else {"use_container_width": True}
 VERIFIED = "programmatically matched in source PDF text"
 CSV = Path(__file__).with_name("evidence_ledger.csv")
 YEARS = range(2020, 2027)

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Hidden in plain sight: cyberbullying of adolescents</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/browser@1.9.2/build/stlite.css" />
+  <style>
+    #loading { font: 16px/1.5 system-ui, sans-serif; max-width: 36rem; margin: 20vh auto; padding: 0 1rem; text-align: center; color: #52514e; }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div id="loading">Loading the dashboard. Python runs in your browser, so the first visit can take 10–30 seconds.</div>
+  </div>
+  <script type="module">
+    // Runs dashboard.py with Streamlit inside the browser (stlite + Pyodide); no server needed.
+    import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@1.9.2/build/stlite.js";
+    mount(
+      {
+        requirements: ["pandas", "plotly"],
+        entrypoint: "dashboard.py",
+        files: {
+          "dashboard.py": { url: "./dashboard.py" },
+          "evidence_ledger.csv": { url: "./evidence_ledger.csv" },
+        },
+      },
+      document.getElementById("root"),
+    );
+  </script>
+</body>
+</html>
