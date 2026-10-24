@@ -104,6 +104,23 @@ SOURCES = {
                  "https://www.thehindu.com/news/national/uttar-pradesh/uttar-pradesh-police-warn-of-growing-hybrid-cybercrime-threat-stress-public-awareness/article71042340.ece",
                  "https://www.thehindu.com/news/national/uttar-pradesh/uttar-pradesh-police-warn-of-growing-hybrid-cybercrime-threat-stress-public-awareness/article71042340.ece",
                  "2026-05-31", "hindu_up.txt", "web"),
+    "HBSC_DATA": ("WHO/HBSC international data browser: country data file, survey 2021/22",
+                  "https://data-browser.hbsc.org/wp-content/uploads/csvs/data.csv",
+                  "https://data-browser.hbsc.org/measure/cyberbullying-bullying-others/#chart", "n.d.", "hbsc_data.csv", "data"),
+    "YRBS": ("CDC, Youth Risk Behavior Survey Data Summary & Trends Report 2013-2023 (2024)",
+             "https://www.cdc.gov/yrbs/dstr/pdf/YRBS-2023-Data-Summary-Trend-Report.pdf",
+             "https://www.cdc.gov/yrbs/dstr/pdf/YRBS-2023-Data-Summary-Trend-Report.pdf", "2024", "yrbs2023.txt", "pdf"),
+    "PEW": ("Pew Research Center, Teens and Cyberbullying 2022 (15 Dec 2022)",
+            "https://www.pewresearch.org/internet/2022/12/15/teens-and-cyberbullying-2022/",
+            "https://www.pewresearch.org/internet/2022/12/15/teens-and-cyberbullying-2022/", "2022-12-15", "pew2022.txt", "web"),
+    "ONS23": ("ONS, Bullying and online experiences among children in England and Wales: year ending March 2023 (7 Mar 2024)",
+              "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/bulletins/bullyingandonlineexperiencesamongchildreninenglandandwales/yearendingmarch2023",
+              "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/bulletins/bullyingandonlineexperiencesamongchildreninenglandandwales/yearendingmarch2023",
+              "2024-03-07", "ons2023.txt", "web"),
+    "ONS20": ("ONS, Online bullying in England and Wales: year ending March 2020 (16 Nov 2020)",
+              "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/bulletins/onlinebullyinginenglandandwales/yearendingmarch2020",
+              "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/bulletins/onlinebullyinginenglandandwales/yearendingmarch2020",
+              "2020-11-16", "ons2020.txt", "web"),
     "BLOG": ("Bullying Sin Fronteras blog: Bullying statistics in India",
              "https://bullyingsinfronteras.blogspot.com/2022/03/bullying-statistics-in-india-110000.html",
              "https://bullyingsinfronteras.blogspot.com/2022/03/bullying-statistics-in-india-110000.html", "2022-03 (updated Oct 2025)", "blog.txt", "web"),
@@ -452,6 +469,79 @@ add("BLOG", I, IA, None, "Excluded source", "Blog compilation of bullying statis
     "excluded from the dashboard story; kept here for transparency")
 
 
+# ---- United States: CDC YRBS 2023 (high school students) and Pew 2022 (teens 13-17) ----
+US = "United States"
+YRBS_ANC = ("Total Female Male American Indian or Alaska Native Asian Black Hispanic Native Hawaiian or Pacific Islander White "
+            "Multiracial 16% 21% 12% 15% 13% 11% 14% 4% 20% 18%")
+for grp, val, anc in [("all", 16, YRBS_ANC), ("female", 21, YRBS_ANC), ("male", 12, YRBS_ANC),
+                      ("LGBTQ+", 25, "Cisgender and Heterosexual LGBTQ+ 13% 25%"),
+                      ("cisgender and heterosexual", 13, "Cisgender and Heterosexual LGBTQ+ 13% 25%")]:
+    add("YRBS", G, US, 2023, "Prevalence", f"Electronically bullied in past year, high school students, {grp}", val, "% of high school students",
+        "Electronically bullied, PDF p.48", anc)
+add("YRBS", G, US, 2023, "Trend", "Electronically bullied: change for male students, 2013-2023", None, "",
+    "Trends, PDF p.49", "The percentage of male students who were electronically bullied increased from 2013 to 2023",
+    "statement only: female rate unchanged, male rate rose")
+for metric, val, anc in [
+    ("Teens who ever experienced at least one of six cyberbullying behaviours", 46,
+     "teens ages 13 to 17 (46%) report ever experiencing at least one of six cyberbullying behaviors"),
+    ("Teens called an offensive name online", 32, "32% of teens saying they have been called an offensive name online"),
+    ("Teens who had false rumours spread about them online", 22, "had false rumors spread about them online (22%)"),
+    ("Teens sent explicit images they did not ask for", 17, "have been sent explicit images they didn’t ask for (17%)"),
+    ("Teens physically threatened online", 10, "10% say they have been physically threatened"),
+    ("Teens whose explicit images were shared without consent", 7, "7% of teens say they have had explicit images of them shared without their consent"),
+    ("Teens who experienced multiple types of cyberbullying", 28, "In total, 28% of teens have experienced multiple types of cyberbullying"),
+    ("Girls aged 15-17 who experienced at least one behaviour", 54,
+     "Some 54% of girls ages 15 to 17 have experienced at least one of the six cyberbullying behaviors"),
+    ("Teens saying social media sites do a good job addressing cyberbullying", 25,
+     "A quarter of teens say social media sites are doing at least a good job"),
+]:
+    add("PEW", G, US, 2022, "Prevalence", metric, val, "% of US teens aged 13-17", "Report text", anc, "survey conducted April 14-May 4, 2022")
+
+# ---- United Kingdom (England and Wales): ONS Crime Survey, children aged 10-15 ----
+EW = "England and Wales"
+add("ONS23", G, EW, 2023, "Prevalence", "Children aged 10-15 who experienced an online bullying behaviour", 19.1, "% of children aged 10-15",
+    "Main points", "847,000 children (19.1%) experienced an online bullying behaviour", "year ending March 2023")
+add("ONS23", G, EW, 2023, "Prevalence", "Children aged 10-15 who experienced an online bullying behaviour (number)", 847000, "children",
+    "Main points", "847,000 children (19.1%) experienced an online bullying behaviour", "year ending March 2023")
+add("ONS23", G, EW, 2023, "Prevalence", "Children aged 10-15 who experienced an in-person bullying behaviour", 34.9, "% of children aged 10-15",
+    "Main points", "An estimated 1,544,000 children aged 10 to 15 years (34.9%) experienced an in-person bullying behaviour", "year ending March 2023")
+add("ONS23", G, EW, 2023, "Reporting", "Children bullied online who told no one", 18.1, "% of children bullied online", "Main points",
+    "18.1% who experienced an online bullying behaviour", "year ending March 2023")
+for metric, val, anc in [
+    ("Children aged 10-15 who experienced an online bullying behaviour", 19,
+     "Around one in five children aged 10 to 15 years in England and Wales (19%) experienced at least one type of online bullying behaviour"),
+    ("Children bullied online who would not describe it as bullying", 52,
+     "More than half (52%) of those children who experienced online bullying behaviours"),
+    ("Children bullied online who did not report it to anyone", 26, "one in four (26%) did not report their experiences to anyone"),
+    ("Children bullied online who used a helpline to report it", 1, "Helplines were used by 1% of children to report online bullying behaviours"),
+    ("Children bullied online who experienced some of it at school or during school time", 72,
+     "Nearly three out of four children (72%) who had experienced an online bullying behaviour experienced at least some of it at school"),
+]:
+    add("ONS20", G, EW, 2020, "Reporting" if "report" in metric or "describe" in metric else "Prevalence", metric, val,
+        "% of children aged 10-15" if metric.startswith("Children aged") else "% of children bullied online", "Main points", anc,
+        "year ending March 2020")
+
+
+def hbsc_country_rows(text_dir):
+    """Every country's 2021/22 HBSC cyber-victimisation rate by age, straight from the data browser file.
+    Value = girls and boys combined (the file's sort value); girls and boys are kept for age 15 to show gender gaps."""
+    rows = []
+    with open(Path(text_dir) / "hbsc_data.csv", encoding="latin-1", newline="") as f:
+        for r in csv.reader(f):
+            if len(r) < 9 or r[0] != "cbeenbullied_once" or r[2] != "2022" or r[1].startswith("HBSC"):
+                continue
+            country, age, girl, boy, both = r[1], r[3], r[4], r[5], r[7]
+            anc = ",".join(r[:8])
+            a = age.split("-")[0]
+            rows.append(("HBSC_DATA", G, country, 2022, "Country prevalence", f"Cyberbullied, age {a}, girls and boys combined",
+                         float(both), "% of adolescents", "data.csv, measure cbeenbullied_once", anc, "HBSC 2021/22; combined value as published in the data browser file"))
+            if a == "15":
+                for sex, val in (("girls", girl), ("boys", boy)):
+                    rows.append(("HBSC_DATA", G, country, 2022, "Country prevalence", f"Cyberbullied, age 15, {sex}", float(val),
+                                 "% of adolescents", "data.csv, measure cbeenbullied_once", anc, "HBSC 2021/22"))
+    return rows
+
+
 def norm(s):
     s = s.replace("|", " ").replace(" ", " ")
     for a, b in (("‐", "-"), ("–", "-"), ("—", "-"), ("’", "'"), ("‘", "'"), ("“", '"'), ("”", '"')):
@@ -464,6 +554,7 @@ def main():
     ap.add_argument("--text-dir", required=True, help="folder with the plain-text copies of each source")
     ap.add_argument("--out", default=str(Path(__file__).with_name("evidence_ledger.csv")))
     args = ap.parse_args()
+    R.extend(hbsc_country_rows(args.text_dir))
     cache, ok, bad = {}, 0, 0
     with open(args.out, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -479,7 +570,7 @@ def main():
                 if txt not in cache:
                     cache[txt] = norm((Path(args.text_dir) / txt).read_text(errors="ignore"))
                 if norm(anc) in cache[txt]:
-                    ver = f"matched in source {'PDF' if kind == 'pdf' else 'web page'} text"
+                    ver = f"matched in source {dict(pdf='PDF', web='web page', data='data file').get(kind)} text"
                     ok += 1
                 else:
                     ver = "ANCHOR NOT FOUND"
