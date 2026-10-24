@@ -49,6 +49,14 @@ PROVIDED = {
     "https://www.unesco.org/reports/gem-report/en/2024-monitoringsdg4",
     "https://www.weprotect.org/wp-content/uploads/Global-Threat-Asssesment-2023-Press-Release.pdf",
     "https://www.bioinformation.net/021/973206300211380.pdf",
+    "https://coalitionforgoodschools.org/wp-content/uploads/2025/09/India_Country-Report_Final.pdf",
+    "https://www.mdpi.com/2673-995X/5/3/95",
+    "https://bullyingsinfronteras.blogspot.com/2022/03/bullying-statistics-in-india-110000.html",
+    "https://timesofindia.indiatimes.com/city/lucknow/one-case-of-cyberbullying-in-up-in-every-8-minutes/articleshow/120289739.cms",
+    "https://www.indiatoday.in/health/story/online-bullying-in-teens-fuels-fear-and-anxiety-survey-finds-1-in-2-parents-worried-2866011-2026-02-10",
+    "https://frontline.thehindu.com/social-issues/cyberbullying-teenagers-india-law-mental-health-ugc-social-media/article69905344.ece",
+    "https://www.thehindu.com/news/national/uttar-pradesh/uttar-pradesh-police-warn-of-growing-hybrid-cybercrime-threat-stress-public-awareness/article71042340.ece",
+    "https://timesofindia.indiatimes.com/city/mysuru/karnataka-saw-315-cyberbullying-cases-between-jan-2022-and-july-2025/articleshow/123682349.cms",
 }
 
 st.markdown("""
@@ -335,7 +343,37 @@ SB23 = row("Cyber crimes against children: Cyber stalking/bullying", 2023, IA)
 CSAM24 = row("Cyber crimes against children: Sexually explicit material depicting children (CSAM)", 2024, IA)
 T24 = row(TOT, 2024, IA)
 sb24, csam24, tot24 = SB24.value, CSAM24.value, T24.value
-STATES24 = df[(df.metric == TOT) & (df.data_year == 2024) & (df.geography != IA)].copy()
+STATES24 = df[(df.metric == TOT) & (df.data_year == 2024) & ~df.geography.isin([IA, "Karnataka"])].copy()
+
+# India: Uttar Pradesh complaints pathway (UP Police WCSO via Times of India) and parents' reporting experience
+UP = "Uttar Pradesh"
+UPC = row("Cyberbullying complaints received (UP Police WCSO / 1090)", 2024, UP)
+UP16 = row("Cyberbullying complaints filed by people aged 16-25", 2024, UP)
+UPW = row("Complaints resolved at first stage (counsellor warning call)", 2024, UP)
+UPF = row("Complaints resolved via Friends, Family and Relatives cell", 2024, UP)
+up_rest = UPC.value - UPW.value - UPF.value
+SB_ALL24 = row("Cyber stalking/bullying of women & children (combined)", 2024)
+LC = df[df.category == "Parent survey (online, self-selected)"]
+LC_REP = LC[LC.metric.str.startswith("Reporting online bullying/harmful content:")].copy()
+LC82 = row("Parents saying reporting is difficult, slow or unclear")
+LC50 = row("Parents saying children aged 9-17 were exposed to inappropriate content or bullying online")
+LC_UNAWARE = row("Reporting online bullying/harmful content: not aware of any clear reporting mechanism")
+LC_N = row("Parents answering the reporting question (LocalCircles)")
+
+# India: Karnataka state reply vs NCRB, and the spread of Indian estimates (context rows live in the full ledger)
+KA_REPLY = df[df.metric == "Cyberbullying cases against children registered (Karnataka govt reply)"].sort_values("data_year")
+KA_NCRB = df[(df.metric == TOT) & (df.geography == "Karnataka")].sort_values("data_year")
+EST_LO = row("Cyberbullying prevalence among Indian adolescents, lowest study estimate", frame=ledger)
+EST_HI = row("Cyberbullying prevalence among Indian adolescents, highest study estimate", frame=ledger)
+DELHI = row("Cybervictimization, past 30 days, before COVID-19 (T1)", frame=ledger)
+CGS37 = row("Children aged 10-17 who experienced cyberbullying (key finding, source not cited)", frame=ledger)
+CGS1614 = row("Cyberstalking cases in 2020 (as stated by the report)", frame=ledger)
+SB_ALL20 = row("Cyber stalking/bullying of women & children (combined)", 2020)
+POLICY = ledger[ledger.category == "Policy framework"]
+UGC = POLICY[POLICY.metric.str.startswith("UGC directive")].iloc[0]
+TG = POLICY[POLICY.metric.str.startswith("Telangana")].iloc[0]
+NOLAW = POLICY[POLICY.metric.str.startswith("No Indian law")].iloc[0]
+EXCLUDED = ledger[ledger.category == "Excluded source"]
 
 # India: what happens to recorded cyber stalking/bullying cases (women and children combined)
 SB = "Cyber stalking/bullying of women/children"
@@ -571,6 +609,44 @@ with right:
          f"All types. NCRB, Table 9A.11. {HP_REC24.value:,.0f} in 2024.")
     ev(as_frame(HP_REC23, HP_REC24))
 
+st.subheader(f"Where complaints go instead: in Uttar Pradesh, {UPC.value:,.0f} cyberbullying complaints in a year, "
+             f"most settled by a phone call")
+st.markdown(f"UP Police's women-and-child safety unit received **{UPC.value:,.0f}** cyberbullying complaints in 2024, more "
+            f"than {UP16.value:,.0f} of them from people aged 16–25. Counsellors settled {UPW.value:,.0f} with a warning call "
+            f"to the person accused and {UPF.value:,.0f} by reaching out to that person's family; the rest went to district "
+            f"police. Complaints settled this way never become crime records. For comparison, NCRB recorded "
+            f"{SB_ALL24.value:,.0f} cyber stalking/bullying cases of women and children in the whole country that year.")
+upf = pd.DataFrame([("Complaints received", UPC.value, "Received"), ("Settled by a counsellor's warning call", UPW.value, "Settled outside the crime record"),
+                    ("Settled through family and relatives", UPF.value, "Settled outside the crime record"),
+                    ("Left for district police (computed)", up_rest, "Escalated")], columns=["stage", "value", "kind"])
+fig = px.bar(upf.iloc[::-1], x="value", y="stage", orientation="h", text="value", color="kind",
+             color_discrete_map={"Received": BLUE, "Settled outside the crime record": GREY, "Escalated": ORANGE},
+             labels={"value": "cyberbullying complaints, Uttar Pradesh, 2024", "stage": ""})
+fig.update_traces(texttemplate="%{text:,.0f}", textposition="outside")
+plot(fig, 280)
+ev(as_frame(UPC, UP16, UPW, UPF, SB_ALL24), computed=[("Left for district police", f"{UPC.value:,.0f} − {UPW.value:,.0f} − {UPF.value:,.0f} = {up_rest:,.0f}")],
+   note="Figures are UP Police (WCSO) data as reported by the Times of India; they count complaints, not FIRs, and include "
+        "adults. The NCRB figure is a different measure (registered cases) and is shown only for scale.")
+
+st.subheader(f"Parents say reporting is hard: {LC82.value:.0f}% call it difficult, slow or unclear")
+st.markdown(f"In a LocalCircles poll of urban parents, {LC50.value:.0f}% said their children aged 9–17 had met inappropriate "
+            f"content or bullying online. Asked how easy it is to report such harm to platforms or authorities, only "
+            f"{v('Reporting online bullying/harmful content: very easy and effective'):.0f}% said very easy and effective; "
+            f"{LC_UNAWARE.value:.0f}% did not know of any clear way to report at all.")
+lr = LC_REP.copy()
+lr["answer"] = lr.metric.str.replace("Reporting online bullying/harmful content: ", "", regex=False).str.capitalize()
+lr["kind"] = lr.answer.map(lambda a: "Easy" if a.startswith("Very easy") else "No clear answer" if a.startswith("No clear") else "Hard, slow or unknown")
+scale = ["Very easy and effective", "Somewhat easy but slow or unclear", "Difficult and time-consuming",
+         "Very difficult, complaints usually unresolved", "Not aware of any clear reporting mechanism", "No clear answer"]
+fig = px.bar(lr, x="value", y="answer", orientation="h", text="value", color="kind",
+             category_orders={"answer": scale},  # px lists explicit category orders top-down
+             color_discrete_map={"Easy": PALETTE[2], "Hard, slow or unknown": ORANGE, "No clear answer": GREY},
+             labels={"value": "% of responding parents", "answer": ""}, hover_data={"id": True})
+fig.update_traces(texttemplate="%{text:.0f}%", textposition="outside")
+plot(fig, 300)
+ev(as_frame(lr, LC82, LC50, LC_N), note=f"Online, self-selected poll of {LC_N.value:,.0f} parents answering this question; not a "
+   "representative sample. Fieldwork dates are not stated in the article.")
+
 st.subheader(f"What the records capture is mostly abuse imagery: {csam24 / tot24:.0%} of child cyber crime cases in 2024")
 st.markdown(f"Of {tot24:,.0f} cyber crimes against children recorded in India in 2024, {csam24:,.0f} involved sexually "
             f"explicit material depicting children. Cyber stalking or bullying made up {sb24:,.0f} cases ({sb24 / tot24:.1%}), "
@@ -689,7 +765,11 @@ chapter(3, "Ideate", "ideate", "From evidence to “How might we…?”",
 HMW = [
     ("make reporting online bullying as easy for a 13-year-old as sending a message?",
      f"In Himachal Pradesh, {HP_CNT.value:,.0f} surveyed students said they were cyberbullied; police in the state "
-     f"recorded {HP_REC23.value:,.0f} cyber crimes against children that year.", as_frame(HP_CNT, HP_REC23)),
+     f"recorded {HP_REC23.value:,.0f} cyber crimes against children that year. {LC_UNAWARE.value:.0f}% of parents polled "
+     f"know of no clear way to report.", as_frame(HP_CNT, HP_REC23, LC_UNAWARE)),
+    ("keep fast, counselling-first help without losing count of what happened?",
+     f"UP Police settled {UPW.value + UPF.value:,.0f} of {UPC.value:,.0f} cyberbullying complaints by warning calls and "
+     f"family outreach; none of these appear in national crime records.", as_frame(UPC, UPW, UPF)),
     ("make sure the cases that are reported actually reach a verdict?",
      f"Of {JUST['cases for trial'].value:,.0f} cyber stalking/bullying cases on trial in 2024, {JUST['cases convicted'].value:,.0f} "
      f"ended in conviction and {JUST['court pendency'].value:.1f}% were still pending.",
@@ -739,12 +819,14 @@ SCORE = pd.DataFrame([
     ["Is it resolved?", "Conviction rate, cyber stalking/bullying (women & children)", f"{JUST['conviction rate'].value:.1f}%", 2024, JUST["conviction rate"].id, "◐ Not child-specific"],
     ["Is it resolved?", "Court pendency, cyber stalking/bullying (women & children)", f"{JUST['court pendency'].value:.1f}%", 2024, JUST["court pendency"].id, "◐ Not child-specific"],
     ["How big is recorded harm?", "Recorded cyber crimes against children, India", f"{tot24:,.0f}", 2024, T24.id, "✔ Baseline exists"],
+    ["Can people report?", "Parents saying reporting is difficult, slow or unclear", f"{LC82.value:.0f}%", int(LC82.data_year), LC82.id, "◐ Self-selected poll"],
+    ["Where do complaints go?", "Cyberbullying complaints to police helpline (Uttar Pradesh)", f"{UPC.value:,.0f}", int(UPC.data_year), UPC.id, "◐ One state, news-reported"],
     ["What does it do?", "Online bullying–self-harm link (median, 21 countries)", f"{sh_med.value:.2f}", int(sh_med.data_year), sh_med.id, "✖ No India estimate"],
     ["Are we preventing it?", "Students given cyber hygiene training (I4C)", f"{HYGIENE.value / 1e5:.0f} lakh+", int(HYGIENE.data_year), HYGIENE.id, "◐ Reach only, no outcomes"],
 ], columns=["Question", "Indicator", "Starting point", "Data year", "Evidence row", "Status"])
 SCORE["Data year"] = SCORE["Data year"].astype(str)
 st.table(SCORE[["Question", "Indicator", "Starting point", "Status", "Data year", "Evidence row"]].set_index("Question"))
-ev(as_frame(HB16, PISA3, HPV, SB24, T24, JUST["conviction rate"], JUST["court pendency"], sh_med, HYGIENE),
+ev(as_frame(HB16, PISA3, HPV, SB24, T24, JUST["conviction rate"], JUST["court pendency"], sh_med, HYGIENE, LC82, UPC),
    computed=[("Bullying share", f"{sb24:,.0f} ÷ {tot24:,.0f} = {sb24 / tot24:.1%}")])
 
 st.subheader("Try it yourself: explore India's recorded cyber crime trends")
@@ -769,8 +851,16 @@ with r[1]:
     stat(f"{LABS.value:.0f}", "States/UTs with cyber forensic-cum-training labs")
 with r[2]:
     stat(f"{TRAINED.value:,.0f}+", "police, judicial officers and prosecutors trained")
-ev(as_frame(CCPWC, LABS, TRAINED), note="Reporting routes already in place: the National Cyber Crime Reporting Portal "
-   "(cybercrime.gov.in), helpline 1930, and NCPCR's POCSO e-box. The NCPCR policy documents are in the annexure.")
+st.markdown(f"""
+- **Reporting routes:** the National Cyber Crime Reporting Portal (cybercrime.gov.in), helpline 1930, NCPCR's POCSO e-box,
+  and state lines such as UP's 1090 women-and-child unit, which settled {UPW.value + UPF.value:,.0f} complaints in 2024
+  through counsellors.
+- **Peer programmes:** Telangana police's Cyber Ambassadors Platform (since January 2023) trains students and teachers as
+  peer cyber-safety officers.
+- **Campus rules:** a UGC directive of 9 July 2025 treats online harassment of juniors in student WhatsApp groups as ragging.
+- **The legal gap:** no Indian law (IT Act, BNS, JJ Act) treats cyberbullying as a distinct offence.
+""")
+ev(as_frame(CCPWC, LABS, TRAINED, UPW, UPF, TG, UGC, NOLAW), note="The NCPCR policy documents are listed in the annexure.")
 
 # ================================================================ 5 TEST
 chapter(5, "Test", "test", "How sure can we be?",
@@ -795,12 +885,31 @@ with right:
                  color_discrete_sequence=PALETTE, labels={"data_year": "data year", "rows": "ledger rows"})
     fig.update_xaxes(dtick=1)
     plot(fig, 440)
-    yrs25 = ", ".join(sorted(df[df.data_year == 2025].source.str.split(",").str[0].unique()))
+    yrs25 = ", ".join(sorted(df[df.data_year == 2025].source.str.split(r"[,:]").str[0].unique()))
+    yrs26 = ", ".join(sorted(df[df.data_year == 2026].source.str.split(r"[,:]").str[0].unique()))
     st.caption(f"Zero means no source with data for that year was found. Nothing is estimated. India: NCRB crime counts run "
                f"to 2024 (Crime in India 2024; July 2026 Lok Sabha reply); 2025 and 2026 not yet published. 2025 rows come "
-               f"from: {yrs25}. 2026 rows are response measures stated in the July 2026 reply. Pre-2020 baselines and policy "
+               f"from: {yrs25}. 2026 rows come from: {yrs26}. Pre-2020 baselines, secondary compilations and policy "
                f"documents are kept in the annexure, not in the charts.")
 ev(ledger, note="Both charts above count ledger rows. The full ledger and source list are in the annexure.")
+
+ka23_reply = KA_REPLY[KA_REPLY.data_year == 2023].value.iloc[0]
+ka23_ncrb = KA_NCRB[KA_NCRB.data_year == 2023].value.iloc[0]
+st.subheader(f"Same state, different counts: Karnataka reported {ka23_reply:,.0f} cases for 2023; NCRB lists {ka23_ncrb:,.0f}")
+st.markdown("Karnataka's government told its Legislative Council how many cyberbullying cases against children were "
+            "registered each year, including the only 2025 figure for India in this evidence. NCRB's table for the same state "
+            "gives very different numbers, because the two use different definitions. Neither is wrong; they are not the same count.")
+kc = pd.concat([KA_REPLY.assign(series="State reply: 'cyberbullying' cases against children"),
+                KA_NCRB.assign(series="NCRB: all cyber crimes against children")])
+kc["year"] = kc.data_year.astype(int).astype(str).replace({"2025": "2025 (Jan–Jul)"})
+fig = px.bar(kc, x="year", y="value", color="series", barmode="group", text="value",
+             category_orders={"year": ["2022", "2023", "2024", "2025 (Jan–Jul)"]},
+             color_discrete_sequence=[ORANGE, BLUE], labels={"value": "cases", "year": ""}, hover_data={"id": True, "note": True})
+fig.update_xaxes(type="category")  # otherwise "2022".."2024" parse as numbers and the "2025 (Jan–Jul)" bar is dropped
+fig.update_traces(texttemplate="%{text:,.0f}", textposition="outside")
+plot(fig, 340)
+ev(kc, note="The state reply, as reported by the Times of India, says the cases were registered under IT Act Section 67B; "
+   "NCRB counts six categories of cyber crime against children.")
 
 st.subheader("Where the story could break")
 st.markdown(f"""
@@ -818,10 +927,21 @@ st.markdown(f"""
 - **Different measures, different answers.** PISA's stricter monthly measure gives {PISA3.value:.0f}%; HBSC's broader one gives
   {HB16.value:.0f}%. Both are shown; neither is wrong.
 - **A link is not a cause.** The mental-health figures show online bullying and harm go together, not that one causes the other.
+- **Indian estimates are all over the place.** Studies put cyberbullying among Indian adolescents anywhere from
+  {EST_LO.value:.1f}% to {EST_HI.value:.2f}% (a review cited in a 2025 study); a small Delhi cohort found {DELHI.value:.1f}%
+  before COVID-19. Different questions, ages and samples give different answers.
+- **Complaints are not cases.** UP's {UPC.value:,.0f} helpline complaints and NCRB's registered cases measure different things.
+- **Polls are not samples.** The LocalCircles parent figures come from a self-selected online poll.
+- **Secondary reports recycle unsourced numbers.** A 2025 Coalition for Good Schools country report says {CGS37.value:.0f}% of
+  Indian children aged 10–17 were cyberbullied without citing a source, and gives {CGS1614.value:,.0f} cyberstalking cases in 2020
+  where NCRB reports {SB_ALL20.value:,.0f}. These figures are kept in the annexure, not in the story.
+- **One link was excluded.** A blog compilation of "bullying statistics in India" gives no sources and makes implausible
+  global claims; it is listed in the annexure for transparency.
 - **Earlier version corrected.** The 2020–2022 India series counts cases registered, not victims, as the source table states.
 """)
 ev(as_frame(HB15, HB16, HPV, SB23, SB24, ANX_NS, BIO48, PISA3, JUST["conviction rate"],
-            row("Cyber crimes against children: Cyber stalking/bullying", 2022, IA)))
+            row("Cyber crimes against children: Cyber stalking/bullying", 2022, IA), EST_LO, EST_HI, DELHI, UPC, LC82,
+            CGS37, CGS1614, SB_ALL20, EXCLUDED))
 
 st.markdown("""
 <div class="heard"><div class="kicker">What would make this story stronger</div>
@@ -841,7 +961,7 @@ travels with self-harm and suicidal thoughts in every country studied.<br>
 {HP_REC23.value:,.0f} cyber crimes against children; nationally, {JUST['cases convicted'].value:,.0f} of
 {JUST['cases for trial'].value:,.0f} cyber stalking/bullying cases on trial ended in conviction.<br>
 <b>Ideate:</b> make reporting easy, get cases to a verdict, link safety with mental health, reach boys early, and measure all of India.<br>
-<b>Prototype:</b> an eleven-line scorecard with today's starting points, and clear gaps where none exist.<br>
+<b>Prototype:</b> a {len(SCORE)}-line scorecard with today's starting points, and clear gaps where none exist.<br>
 <b>Test:</b> every number links to its source and {n_ok} of {len(ledger)} quotes were matched word-for-word; the biggest
 missing piece is a national Indian survey.<br><br>
 <b>The ask:</b> count what children go through, not only what reaches a police station, and see that what is reported is resolved.

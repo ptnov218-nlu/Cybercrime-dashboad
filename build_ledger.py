@@ -79,6 +79,34 @@ SOURCES = {
     "NCPCR_PLAY": ("NCPCR, Regulatory guidelines for private play schools",
                    "https://ncpcr.gov.in/public/viewPdf/17835062196a4e252b6e7ad_c.pdf",
                    "https://ncpcr.gov.in/public/viewPdf/17835062196a4e252b6e7ad_c.pdf", "n.d.", "ncpcr_c.txt", "pdf"),
+    "TOI_UP": ("Times of India: One case of cyberbullying in UP in every 8 minutes (15 Apr 2025), data from UP Police WCSO",
+               "https://timesofindia.indiatimes.com/city/lucknow/one-case-of-cyberbullying-in-up-in-every-8-minutes/articleshow/120289739.cms",
+               "https://timesofindia.indiatimes.com/city/lucknow/one-case-of-cyberbullying-in-up-in-every-8-minutes/articleshow/120289739.cms",
+               "2025-04-15", "toi_up.txt", "web"),
+    "TOI_KA": ("Times of India: Karnataka saw 315 cyberbullying cases between Jan 2022 and July 2025 (4 Sep 2025), Legislative Council reply",
+               "https://timesofindia.indiatimes.com/city/mysuru/karnataka-saw-315-cyberbullying-cases-between-jan-2022-and-july-2025/articleshow/123682349.cms",
+               "https://timesofindia.indiatimes.com/city/mysuru/karnataka-saw-315-cyberbullying-cases-between-jan-2022-and-july-2025/articleshow/123682349.cms",
+               "2025-09-04", "toi_ka.txt", "web"),
+    "LC": ("India Today: LocalCircles Safer Internet Day survey of urban parents (10 Feb 2026)",
+           "https://www.indiatoday.in/health/story/online-bullying-in-teens-fuels-fear-and-anxiety-survey-finds-1-in-2-parents-worried-2866011-2026-02-10",
+           "https://www.indiatoday.in/health/story/online-bullying-in-teens-fuels-fear-and-anxiety-survey-finds-1-in-2-parents-worried-2866011-2026-02-10",
+           "2026-02-10", "indiatoday.txt", "web"),
+    "MDPI": ("Mehari et al., Youth 5(3): 95 (10 Sep 2025), US and India (Delhi) cyberbullying cohort before and during COVID-19",
+             "https://www.mdpi.com/2673-995X/5/3/95", "https://doi.org/10.3390/youth5030095", "2025-09-10", "mdpi.txt", "web"),
+    "CGS": ("Coalition for Good Schools, Towards Safer Schools for Children: India country report (2025)",
+            "https://coalitionforgoodschools.org/wp-content/uploads/2025/09/India_Country-Report_Final.pdf",
+            "https://coalitionforgoodschools.org/wp-content/uploads/2025/09/India_Country-Report_Final.pdf", "2025-09", "cgs_india.txt", "pdf"),
+    "FRONTLINE": ("Frontline: cyberbullying, teenagers, law and mental health in India (8 Aug 2025)",
+                  "https://frontline.thehindu.com/social-issues/cyberbullying-teenagers-india-law-mental-health-ugc-social-media/article69905344.ece",
+                  "https://frontline.thehindu.com/social-issues/cyberbullying-teenagers-india-law-mental-health-ugc-social-media/article69905344.ece",
+                  "2025-08-08", "frontline.txt", "web"),
+    "HINDU_UP": ("The Hindu: UP police warn of growing hybrid cybercrime threat (31 May 2026)",
+                 "https://www.thehindu.com/news/national/uttar-pradesh/uttar-pradesh-police-warn-of-growing-hybrid-cybercrime-threat-stress-public-awareness/article71042340.ece",
+                 "https://www.thehindu.com/news/national/uttar-pradesh/uttar-pradesh-police-warn-of-growing-hybrid-cybercrime-threat-stress-public-awareness/article71042340.ece",
+                 "2026-05-31", "hindu_up.txt", "web"),
+    "BLOG": ("Bullying Sin Fronteras blog: Bullying statistics in India",
+             "https://bullyingsinfronteras.blogspot.com/2022/03/bullying-statistics-in-india-110000.html",
+             "https://bullyingsinfronteras.blogspot.com/2022/03/bullying-statistics-in-india-110000.html", "2022-03 (updated Oct 2025)", "blog.txt", "web"),
 }
 HBSC_DB = "https://data-browser.hbsc.org/measure/cyberbullying-bullying-others/#chart"
 
@@ -175,7 +203,8 @@ for src, yr, loc, rows in [
                                            ("Chhattisgarh", "5 Chhattisgarh 2 0 187 0 0 4 193", 193)]),
     ("NCRB24", 2024, "Table 9A.11, p.967", [("Himachal Pradesh", "9 Himachal Pradesh 0 0 1 0 0 4 5", 5), ("Chhattisgarh", "5 Chhattisgarh 0 0 265 3 0 6 274", 274),
                                            ("Rajasthan", "21 Rajasthan 1 0 171 3 0 22 197", 197), ("Uttar Pradesh", "26 Uttar Pradesh 0 0 59 3 0 124 186", 186),
-                                           ("Kerala", "12 Kerala 0 0 90 13 0 63 166", 166), ("Delhi", "32 Delhi 1 0 149 0 0 2 152", 152)]),
+                                           ("Kerala", "12 Kerala 0 0 90 13 0 63 166", 166), ("Delhi", "32 Delhi 1 0 149 0 0 2 152", 152),
+                                           ("Karnataka", "11 Karnataka 0 0 77 0 0 19 96", 96)]),
 ]:
     for geo, anc, val in rows:
         add(src, I, geo, yr, "Recorded crime", "Cyber crimes against children: TOTAL", val, "cases", loc, anc)
@@ -329,6 +358,98 @@ for src, year, metric, loc, anc in [
      "Cyber-bullying or harassment is handled with utmost care"),
 ]:
     add(src, I, IA, year, "Policy framework", metric, None, "", loc, anc, "policy document; no statistic")
+
+
+# ---- India: state-level complaint and case data reported in the news ----
+UP = "Uttar Pradesh"
+for metric, val, unit, anc in [
+    ("Cyberbullying complaints received (UP Police WCSO / 1090)", 66854, "complaints",
+     "Uttar Pradesh reported a staggering 66,854 cases of cyberbullying in 2024"),
+    ("Cyberbullying complaints filed by people aged 16-25", 45000, "complaints (45,000+)",
+     "more than 45,000—were filed by individuals aged 16 to 25"),
+    ("Complaints resolved at first stage (counsellor warning call)", 59771, "complaints", "59,771 cases were resolved at the first stage"),
+    ("Complaints resolved via Friends, Family and Relatives cell", 5166, "complaints", "Around 5,166 cases were resolved at this stage alone"),
+    ("Cyberbullying complaints from Lucknow", 9839, "complaints", "The maximum 9,839 cases were received from Lucknow"),
+]:
+    add("TOI_UP", I, UP, 2024, "Helpline complaints", metric, val, unit, "Article text", anc,
+        "news report of data accessed from UP Police Women and Child Security Organisation; complaints, not FIRs")
+for yr, val in [(2022, 105), (2023, 117), (2024, 66), (2025, 27)]:
+    add("TOI_KA", I, "Karnataka", yr, "Recorded crime (state reply)", "Cyberbullying cases against children registered (Karnataka govt reply)",
+        val, "cases", "Year-wise table in article", "2022: 105 2023: 117 2024: 66 2025 till July: 27",
+        ("Jan-Jul 2025 only; " if yr == 2025 else "") + "registered under IT Act s.67B per the article; does not match NCRB definitions")
+add("TOI_KA", I, "Karnataka", 2025, "Recorded crime (state reply)", "Cyberbullying cases against children, Jan 2022-Jul 2025 total (Karnataka)",
+    315, "cases", "Article text", "Karnataka recorded as many as 315 cyberbullying cases between Jan 2022 and July 2025",
+    "period total; Legislative Council reply quoted by the article")
+
+# ---- India: parents' experience of reporting (online, self-selected poll) ----
+LCN = "LocalCircles poll (urban India)"
+for metric, val, anc in [
+    ("Parents saying children aged 9-17 were exposed to inappropriate content or bullying online", 50,
+     "50 per cent of urban parents confirmed their children had been exposed to inappropriate material or bullying online"),
+    ("Reporting online bullying/harmful content: very easy and effective", 8,
+     'Out of 18,151 who responded to the question 8% indicated that it is "very easy and effective"'),
+    ("Reporting online bullying/harmful content: somewhat easy but slow or unclear", 7,
+     '7 per cent of respondents indicated that it is "Somewhat easy but slow or unclear"'),
+    ("Reporting online bullying/harmful content: difficult and time-consuming", 17,
+     '17 per cent of respondents indicated that reporting is "difficult and time-consuming"'),
+    ("Reporting online bullying/harmful content: very difficult, complaints usually unresolved", 29,
+     '29 per cent of respondents indicated that it is in fact "verydifficult; complaints usually go unresolved"'),
+    ("Reporting online bullying/harmful content: not aware of any clear reporting mechanism", 29,
+     '29 per cent of respondents indicated that they are "not aware of any clear reporting mechanism"'),
+    ("Reporting online bullying/harmful content: no clear answer", 10, "10 per cent of respondents did not give a clear answer"),
+    ("Parents saying reporting is difficult, slow or unclear", 82,
+     "82 per cent parents of children between ages 9-17 surveyed say reporting online bullying"),
+]:
+    add("LC", I, LCN, 2026, "Parent survey (online, self-selected)", metric, val, "% of responding parents", "Article text", anc,
+        "online poll, not a representative sample; fieldwork dates not stated, publication year used")
+add("LC", I, LCN, 2026, "Sample", "Parents answering the reporting question (LocalCircles)", 18151, "parents", "Article text",
+    "Out of 18,151 who responded to the question", "online poll, not a representative sample")
+
+# ---- India: small Delhi cohort and the spread of Indian estimates ----
+DL = "Delhi NCR schools (cohort)"
+add("MDPI", I, DL, 2019, "Survey (small cohort)", "Cybervictimization, past 30 days, before COVID-19 (T1)", 35.1, "% of youth aged 9-15",
+    "Results 4.2", "at T1, 33.9% of youth reported engaging in cyberbullying, and 35.1% reported experiencing cybervictimization",
+    "fieldwork Oct 2019-Jan 2020, outside 2020-2026 window; n=178")
+add("MDPI", I, DL, 2019, "Survey (small cohort)", "Cyberbullying perpetration, past 30 days, before COVID-19 (T1)", 33.9, "% of youth aged 9-15",
+    "Results 4.2", "at T1, 33.9% of youth reported engaging in cyberbullying", "fieldwork Oct 2019-Jan 2020, outside 2020-2026 window; n=178")
+add("MDPI", I, DL, 2019, "Sample", "Delhi youth surveyed before COVID-19, ages 9-15", 178, "youth", "Methods",
+    "The India participants were 178 youth aged 9–15 years", "fieldwork Oct 2019-Jan 2020")
+add("MDPI", I, DL, 2020, "Sample", "Delhi cohort retained after COVID-19 onset", 21.3, "% retained (n = 38)", "Results 4.1",
+    "the retention rate was 21.3% (n = 38)", "lower-income youth significantly less likely to remain")
+add("MDPI", I, "India (studies reviewed)", None, "Secondary compilation", "Cyberbullying prevalence among Indian adolescents, lowest study estimate", 3.3,
+    "%", "Introduction (citing Vijayarani et al., 2024)", "from 3.3 to 60.56%", "range across studies, cited by the paper; no single data year")
+add("MDPI", I, "India (studies reviewed)", None, "Secondary compilation", "Cyberbullying prevalence among Indian adolescents, highest study estimate", 60.56,
+    "%", "Introduction (citing Vijayarani et al., 2024)", "from 3.3 to 60.56%", "range across studies, cited by the paper; no single data year")
+
+# ---- Secondary compilation (figures without cited sources; annexure only) ----
+for metric, val, anc, note in [
+    ("Children aged 10-17 who experienced cyberbullying (key finding, source not cited)", 37,
+     "37% of children (10-17 years) having experienced cyberbullying", "no source or data year given for this key finding"),
+    ("Children aged 10-17 exposed to online sexual exploitation (key finding, source not cited)", 14,
+     "14% exposed to online sexual exploitation", "no source or data year given for this key finding"),
+    ("Students in grades 6-12 reporting being bullied (key finding, source not cited)", 34,
+     "34% of students (Grades 6-12) report being bullied", "no source or data year given for this key finding"),
+    ("Cyberstalking cases in 2020 (as stated by the report)", 1614, "Among these, 1614 cases of cyberstalking",
+     "conflicts with NCRB via PIB 2026: 872 cyber stalking/bullying cases of women/children in 2020"),
+]:
+    add("CGS", I, IA, None, "Secondary compilation", metric, val, "% / cases as stated", "Key findings p.4; p.8", anc, note)
+
+# ---- Policy and context from news reporting (no statistic) ----
+for src, year, metric, loc, anc in [
+    ("FRONTLINE", 2025, "UGC directive (9 Jul 2025): colleges to monitor student WhatsApp groups; online harassment of juniors treated as ragging",
+     "Article text", "On July 9, the University Grants Commission (UGC) issued a directive"),
+    ("FRONTLINE", 2023, "Telangana police Cyber Ambassadors Platform (Jan 2023): students and teachers trained as peer cyber-safety officers",
+     "Article text", "launched the Cyber Ambassadors Platform in January 2023"),
+    ("FRONTLINE", None, "No Indian law (IT Act, BNS, JJ Act) treats cyberbullying as a distinct offence", "Article text",
+     "none of these laws address cyberbullying as a distinct offence"),
+    ("CGS", None, "No specific law against bullying in India", "p.9", "There is no specific law against bullying in India"),
+    ("HINDU_UP", 2026, "UP Police expanded the 1930 cyber helpline with a dedicated call centre in Lucknow; minors named as vulnerable to blackmail, "
+     "morphing and sextortion", "Article text", "U.P. Police has expanded its 1930 cyber helpline capacity with a dedicated call-centre setup in Lucknow"),
+]:
+    add(src, I, IA, year, "Policy framework", metric, None, "", loc, anc, "context from news reporting; no statistic")
+add("BLOG", I, IA, None, "Excluded source", "Blog compilation of bullying statistics (not used: unsourced, implausible global claims)", None, "",
+    "Blog text", "200,000 children and adolescents die each year worldwide as a result of bullying and cyberbullying",
+    "excluded from the dashboard story; kept here for transparency")
 
 
 def norm(s):
